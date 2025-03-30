@@ -1,61 +1,57 @@
-<div class="container card">
-  <app-navbar></app-navbar>
+<div class="section-group">
+  <div class="card section">
+    <app-pdf-upload
+      (upload)="uploadPDF($event)"
+      [isLoading]="isLoadingUpload"
+    ></app-pdf-upload>
+  </div>
+</div>
 
-  <div class="section-group">
-    <div class="card section">
-      <app-pdf-upload
-        (upload)="uploadPDF($event)"
-        [isLoading]="isLoadingUpload"
-      ></app-pdf-upload>
+<div class="section-group">
+  <div class="card section">
+    <app-pdf-list
+      [pdfList]="pdfList"
+      (delete)="deletePDF($event)"
+      [isLoading]="isLoadingList"
+    ></app-pdf-list>
+  </div>
+</div>
+
+<div class="section-group">
+  <div class="card section">
+    <div class="clear-db-section">
+      <h2>Database and File Management</h2>
+      <p>
+        Clear all stored data and uploaded files from the system. Use this
+        carefully as it will delete all records.
+      </p>
+      <button
+        class="primary"
+        (click)="clearDatabase()"
+        [disabled]="isClearingDatabase"
+      >
+        <app-spinner *ngIf="isClearingDatabase"></app-spinner>
+        {{ isClearingDatabase ? " Clearing..." : "Clear Database" }}
+      </button>
     </div>
   </div>
+</div>
 
-  <div class="section-group">
-    <div class="card section">
-      <app-pdf-list
-        [pdfList]="pdfList"
-        (delete)="deletePDF($event)"
-        [isLoading]="isLoadingList"
-      ></app-pdf-list>
-    </div>
+<div class="section-group">
+  <div class="card section">
+    <app-pdf-statistics
+      [pdfCount]="pdfStatistic.pdf_count"
+    ></app-pdf-statistics>
   </div>
+</div>
 
-  <div class="section-group">
-    <div class="card section">
-      <div class="clear-db-section">
-        <h2>Database and File Management</h2>
-        <p>
-          Clear all stored data and uploaded files from the system. Use this
-          carefully as it will delete all records.
-        </p>
-        <button
-          class="primary"
-          (click)="clearDatabase()"
-          [disabled]="isClearingDatabase"
-        >
-          <app-spinner *ngIf="isClearingDatabase"></app-spinner>
-          {{ isClearingDatabase ? " Clearing..." : "Clear Database" }}
-        </button>
-      </div>
-    </div>
+<div class="section-group">
+  <div class="card section">
+    <h2>Document Statistics</h2>
+    <p>Total Documents in Chroma DB: {{ pdfStatistic.doc_count }}</p>
   </div>
+</div>
 
-  <div class="section-group">
-    <div class="card section">
-      <app-pdf-statistics
-        [pdfCount]="pdfStatistic.pdf_count"
-      ></app-pdf-statistics>
-    </div>
-  </div>
-
-  <div class="section-group">
-    <div class="card section">
-      <h2>Document Statistics</h2>
-      <p>Total Documents in Chroma DB: {{ pdfStatistic.doc_count }}</p>
-    </div>
-  </div>
-
-  <div class="navigation">
-    <a routerLink="/home" class="button">Back to Home</a>
-  </div>
+<div class="navigation">
+  <a routerLink="/home" class="button">Back to Home</a>
 </div>

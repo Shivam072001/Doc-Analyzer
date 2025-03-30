@@ -1,12 +1,11 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http'; // We won't use this directly, but Angular might require it
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ApiService } from './http/services/api.service';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { AuthService } from './auth/services/auth.service';
-import { httpInterceptorProviders } from './http/interceptors';
-import { authInterceptorProviders } from './auth/interceptors';
 import { LayoutModule } from './layout/layout.module';
+import { AuthInterceptor } from './auth/interceptors/auth.interceptor';
 
 @NgModule({
   imports: [CommonModule, HttpClientModule, LayoutModule],
@@ -14,12 +13,13 @@ import { LayoutModule } from './layout/layout.module';
     ApiService,
     AuthService,
     AuthGuard,
-    httpInterceptorProviders,
-    authInterceptorProviders,
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: AuthInterceptor,
+    //   multi: true,
+    // },
   ],
-  exports: [
-    LayoutModule, // Export layout module for use in AppModule
-  ],
+  exports: [LayoutModule],
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

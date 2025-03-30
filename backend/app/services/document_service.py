@@ -2,7 +2,7 @@ import os
 import shutil
 import hashlib
 from ..core.interfaces import DocumentServiceInterface
-from ..core.models import Document
+from ..core.models.document import Document
 from ..utils.file_utils import file_exists, compute_file_hash, clear_directory
 from ..utils.text_processing import preprocess_text
 from langchain_community.document_loaders import PDFPlumberLoader

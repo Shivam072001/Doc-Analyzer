@@ -6,6 +6,7 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { HomeModule } from './features/home/home.module';
 import { PdfManagementModule } from './features/pdf-management/pdf-management.module';
+import { AuthModule } from './features/auth/auth.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,6 +17,7 @@ import { PdfManagementModule } from './features/pdf-management/pdf-management.mo
     SharedModule,
     HomeModule,
     PdfManagementModule,
+    AuthModule
   ],
   providers: [],
   bootstrap: [AppComponent],

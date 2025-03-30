@@ -6,8 +6,8 @@ import { environment } from '../../../../environments/environments';
   providedIn: 'root',
 })
 export class ApiService {
-  private axiosClient: AxiosInstance;
-  private readonly API_BASE_URL = environment.apiUrl; // Assuming you'll configure this
+  private readonly axiosClient: AxiosInstance;
+  private readonly API_BASE_URL = environment.apiUrl;
 
   constructor() {
     this.axiosClient = axios.create({

@@ -128,6 +128,10 @@ langchain-ollama
 langchain-chroma
 langchain_core
 flask_cors
-pymongo
 datetime
 logging
+flask_pymongo
+pymongo
+bcrypt
+PyJWT
+functools

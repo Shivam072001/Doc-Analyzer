@@ -12,6 +12,14 @@
         (click)="handleNavigation($event)"
         >PDF Management</a
       >
+      <ng-container *ngIf="!authService.isAuthenticated()">
+        <a routerLink="/auth/signup" routerLinkActive="active" class="nav-link">Sign Up</a>
+        <a routerLink="/auth/signin" routerLinkActive="active" class="nav-link">Sign In</a>
+      </ng-container>
+      <ng-container *ngIf="authService.isAuthenticated()">
+        <span class="nav-link">Welcome, {{ getUsername() }}</span>
+        <button class="nav-link logout-button" (click)="logout()">Logout</button>
+      </ng-container>
     </div>
   </div>
 </nav>

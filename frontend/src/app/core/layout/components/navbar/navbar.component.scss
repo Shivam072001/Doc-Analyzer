@@ -22,6 +22,7 @@
 .navbar-links {
   display: flex;
   gap: 15px; /* Space between nav links */
+  align-items: center; /* Align items vertically in the links container */
 }
 
 .nav-link {
@@ -36,4 +37,20 @@
 .nav-link:hover {
   background-color: var(--highlight-color);
   color: #ffd700;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: background-color var(--transition-duration),
+    color var(--transition-duration);
+
+  &:hover {
+    background-color: var(--highlight-color);
+    color: #ffd700;
+  }
 }

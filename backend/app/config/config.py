@@ -16,6 +16,9 @@ class Config:
     CHUNK_OVERLAP = int(os.getenv('CHUNK_OVERLAP', 100))
     SCORE_THRESHOLD = float(os.getenv('SCORE_THRESHOLD', 0.1))
     SEARCH_K = int(os.getenv('SEARCH_K', 20))
+    
+    MONGO_URI = os.getenv('MONGO_URI')
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'your-secret-key') # Add a secret key
 
     @staticmethod
     def get_config(environment):
