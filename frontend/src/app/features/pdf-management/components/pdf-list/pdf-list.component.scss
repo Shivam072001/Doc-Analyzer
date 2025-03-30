@@ -1,0 +1,86 @@
+.pdf-list-section {
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--card-background);
+  box-shadow: var(--box-shadow);
+}
+
+#pdfList {
+  margin: 20px;
+}
+
+/* Container for each PDF item */
+.pdf-item {
+  display: flex;
+  justify-content: space-between; /* Space between content and buttons */
+  align-items: center; /* Align items vertically in the center */
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--card-background);
+}
+
+/* Button container to hold buttons */
+.button-container {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+}
+
+/* General button style */
+.button-container .btn {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color var(--transition-duration),
+    transform var(--transition-duration);
+}
+
+/* Specific button styles */
+.view-button {
+  background-color: #007bff;
+}
+
+.view-button:hover {
+  background-color: #0056b3;
+}
+
+.delete-button {
+  background-color: #dc3545;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+@media (max-width: 768px) {
+  .pdf-item {
+    flex-direction: column; /* Stack items vertically on smaller screens */
+    padding: 15px;
+  }
+
+  .button-container {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 10px;
+    justify-content: center; /* Center buttons on smaller screens */
+  }
+
+  .button-container .btn {
+    width: 100%; /* Make buttons full width on small screens */
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pdf-item {
+    padding: 10px;
+  }
+
+  .button-container .btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+}

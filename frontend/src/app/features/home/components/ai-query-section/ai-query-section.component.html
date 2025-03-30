@@ -1,0 +1,25 @@
+<div class="query-section">
+  <h2>Ask AI</h2>
+  <p>
+    Submit your questions to Ollama3.1 AI model with no embedding from PDFs. I
+    would use this mostly to compare answers
+  </p>
+  <input
+    type="text"
+    id="query"
+    placeholder="Type your question here to the AI model without PDF"
+    [(ngModel)]="query"
+  />
+  <button id="askAIButton" (click)="onAsk()" [disabled]="isLoading">
+    <div *ngIf="isLoading" class="spinner"></div>
+    {{ !isLoading ? "Submit" : "" }}
+  </button>
+  <button (click)="onCopyAndAsk()" [disabled]="isLoading">
+    <div *ngIf="isLoading" class="spinner"></div>
+    {{ !isLoading ? "Copy Prompt from ASKPDF & Submit" : "" }}
+  </button>
+  <div id="queryResponseContainerAI" class="response-container">
+    <div id="queryResponseAI" class="response" [innerHTML]="response"></div>
+    <div class="resize-handle"></div>
+  </div>
+</div>

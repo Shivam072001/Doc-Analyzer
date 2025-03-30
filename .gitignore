@@ -1,0 +1,45 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore environment variables and secret files
+.env
+.env.local
+.env.*.local
+
+# Ignore Python virtual environments and dependencies
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# Ignore Flask compiled and cache files
+instance/
+*.sqlite3
+*.db
+*.log
+
+# Ignore Angular dependencies and build artifacts
+node_modules/
+dist/
+out-tsc/
+coverage/
+.angular/
+
+# Ignore Angular environment files (optional)
+src/environments/environment*.ts
+
+# Ignore editor and OS-generated files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore logs and debugging files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

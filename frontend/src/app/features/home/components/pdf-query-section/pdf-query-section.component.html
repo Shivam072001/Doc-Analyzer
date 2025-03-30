@@ -1,0 +1,33 @@
+<div class="pdf-query-section">
+  <h2>Ask About PDF Content</h2>
+  <div id="promptContainer">
+    <p>
+      Use the dropdown menu below to choose an appropriate prompt template...
+    </p>
+    <select id="promptType">
+      <option *ngFor="let type of promptTypes" [value]="type">
+        {{ type }}
+      </option>
+    </select>
+  </div>
+  <input
+    type="text"
+    id="queryPDF"
+    placeholder="Type your question about the PDF/s"
+    [(ngModel)]="query"
+    (ngModelChange)="queryChange.emit(query)"
+  />
+  <button id="askPDFButton" (click)="onAsk()" [disabled]="isLoading">
+    <div *ngIf="isLoading" class="spinner"></div>
+    {{ !isLoading ? "Submit" : "" }}
+  </button>
+  <div id="queryResponseContainer" class="response-container">
+    <div id="queryResponse" class="response" [innerHTML]="response"></div>
+    <div class="resize-handle"></div>
+  </div>
+  <button (click)="onClearChat()" style="margin-top: 10px">Clear</button>
+  <span style="margin-left: 10px"></span>
+  <span id="chatHistoryStatus" class="status-message">{{
+    chatHistoryStatus
+  }}</span>
+</div>

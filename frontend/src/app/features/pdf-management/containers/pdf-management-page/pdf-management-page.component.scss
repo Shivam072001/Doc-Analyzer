@@ -1,0 +1,24 @@
+.container.card {
+  /* Add any specific styling for the PDF management page container if needed */
+}
+
+.section-group {
+  /* Styles for the section groups are in styles.scss */
+}
+
+.section {
+  /* Styles for individual sections are in styles.scss */
+}
+
+.clear-db-section {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--card-background);
+  box-shadow: var(--box-shadow);
+}
+
+.navigation {
+  /* Styles for the navigation are in home-page.component.scss */
+}

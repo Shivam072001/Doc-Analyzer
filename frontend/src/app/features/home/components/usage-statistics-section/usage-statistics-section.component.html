@@ -1,0 +1,35 @@
+<h2>Usage Statistics</h2>
+<div class="query-usage-section">
+  <h3>Query Usage Statistics</h3>
+  <p>
+    View statistics on how frequently different queries are made to the AI and
+    PDF content.
+  </p>
+  <div id="queryUsageStats" class="stats">
+    <ul *ngIf="queryUsageKeys.length > 0">
+      <li *ngFor="let pdf of queryUsageKeys">
+        {{ pdf }}: {{ queryUsage[pdf].count }} queries ({{
+          queryUsage[pdf].percentage | number : "1.2-2"
+        }}%)
+      </li>
+    </ul>
+    <p *ngIf="queryUsageKeys.length === 0">No usage statistics available.</p>
+  </div>
+</div>
+<div class="pdf-usage-section">
+  <h3>PDF Usage Statistics</h3>
+  <p>
+    Monitor how often each uploaded PDF is accessed or queried within the
+    system.
+  </p>
+  <div id="pdfUsageStats" class="stats">
+    <ul *ngIf="pdfUsageKeys.length > 0">
+      <li *ngFor="let pdf of pdfUsageKeys">
+        {{ pdf }}: {{ pdfUsage[pdf].count }} queries ({{
+          pdfUsage[pdf].percentage | number : "1.2-2"
+        }}%)
+      </li>
+    </ul>
+    <p *ngIf="pdfUsageKeys.length === 0">No usage statistics available.</p>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+.navbar {
+  background-color: var(--secondary-color);
+  padding: 10px 0;
+}
+
+.navbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space between logo and links */
+}
+
+.navbar-logo {
+  flex-shrink: 0; /* Prevent logo from shrinking */
+}
+
+.header-image {
+  width: 70px; /* Adjust as needed */
+  height: auto; /* Maintain aspect ratio */
+  margin-right: 10px; /* Space between the image and text */
+}
+
+.navbar-links {
+  display: flex;
+  gap: 15px; /* Space between nav links */
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  transition: background-color var(--transition-duration),
+    color var(--transition-duration);
+}
+
+.nav-link:hover {
+  background-color: var(--highlight-color);
+  color: #ffd700;
+}

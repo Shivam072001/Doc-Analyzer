@@ -1,0 +1,25 @@
+/* Sass Variables */
+$primary-color: #007bff;
+$secondary-color: #0056b3;
+$highlight-color: #003d7a;
+$text-color: #333;
+$background-color: #f4f4f4;
+$card-background: #fff;
+$border-color: #ddd;
+$border-radius: 8px;
+$box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+$transition-duration: 0.3s;
+
+/* Optional: Define CSS Custom Properties based on Sass Variables */
+:root {
+  --primary-color: #{$primary-color};
+  --secondary-color: #{$secondary-color};
+  --highlight-color: #{$highlight-color};
+  --text-color: #{$text-color};
+  --background-color: #{$background-color};
+  --card-background: #{$card-background};
+  --border-color: #{$border-color};
+  --border-radius: #{$border-radius};
+  --box-shadow: #{$box-shadow};
+  --transition-duration: #{$transition-duration};
+}

@@ -1,0 +1,17 @@
+<div class="pdf-list-section">
+  <h2>Available PDF Documents</h2>
+  <p>View and access the list of PDFs that have been uploaded to the system.</p>
+  <div *ngIf="isLoading"><app-spinner></app-spinner> Loading PDFs...</div>
+  <ul id="pdfList" *ngIf="!isLoading && pdfList.length > 0">
+    <li *ngFor="let pdf of pdfList" class="pdf-item">
+      {{ pdf }}
+      <div class="button-container">
+        <button class="btn view-button" (click)="viewPDF(pdf)">View</button>
+        <button class="btn delete-button" (click)="onDelete(pdf)">
+          Delete
+        </button>
+      </div>
+    </li>
+  </ul>
+  <p *ngIf="!isLoading && pdfList.length === 0">No documents found.</p>
+</div>

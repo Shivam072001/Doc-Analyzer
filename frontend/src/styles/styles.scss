@@ -1,0 +1,316 @@
+/* Import global variables */
+@use './_variables.scss' as variables;
+
+/* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: variables.$background-color;
+  color: variables.$text-color;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Card Styles */
+.card {
+  background: variables.$card-background;
+  border-radius: variables.$border-radius;
+  box-shadow: variables.$box-shadow;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Section Styles */
+.section-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.section {
+  flex: 1;
+  min-width: calc(50% - 20px);
+}
+
+h2 {
+  color: variables.$text-color;
+  margin-top: 0;
+}
+
+/* Button Styles (General - more specific button styles will be in component files) */
+button {
+  padding: 10px 20px;
+  background: variables.$primary-color;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color variables.$transition-duration, transform variables.$transition-duration;
+}
+
+button:hover {
+  background: variables.$secondary-color;
+  transform: scale(1.05);
+}
+
+/* Input Styles */
+input[type="file"],
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  box-sizing: border-box;
+  border: 1px solid variables.$border-color;
+  border-radius: 5px;
+}
+
+/* List Styles */
+ul,
+ol {
+  padding: 0;
+  margin: 0;
+  list-style-position: inside;
+}
+
+li {
+  background: variables.$card-background;
+  margin: 5px 0;
+  padding: 10px;
+  border: 1px solid variables.$border-color;
+  border-radius: 5px;
+}
+
+/* Container for response and resize handle */
+.response-container {
+  position: relative;
+  margin-top: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Response Section */
+.response {
+  padding: 15px;
+  border: 1px solid variables.$border-color;
+  border-radius: 5px;
+  background: #fff;
+  height: 150px;
+  max-height: 500px;
+  min-height: 100px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Resize Handle */
+.resize-handle {
+  width: 20px;
+  height: 20px;
+  background: variables.$primary-color;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  cursor: ns-resize;
+  z-index: 10;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  box-shadow: variables.$box-shadow;
+}
+
+/* Loading Spinner */
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid variables.$primary-color;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin: 10px auto;
+}
+
+/* Spin Animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading Message */
+.loading-message {
+  font-size: 16px;
+  color: variables.$primary-color;
+  text-align: center;
+  margin: 10px 0;
+}
+
+/* Statistics Section */
+.stats {
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid variables.$border-color;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+/* Status Messages */
+.status-message {
+  font-size: 16px;
+  color: variables.$primary-color;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Fade Out Animation */
+.fade-out {
+  opacity: 0;
+  transition: opacity 2s ease-out;
+}
+
+/* Accessibility Improvements */
+:focus {
+  outline: 3px solid variables.$highlight-color;
+  outline-offset: 2px;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #0056b3;
+    --secondary-color: #007bff;
+    --highlight-color: #ffd700;
+    --text-color: #f4f4f4;
+    --background-color: #333;
+    --card-background: #444;
+    --border-color: #555;
+  }
+
+  body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+
+  .nav-link,
+  button,
+  .status-message,
+  .loading-message {
+    color: #fff;
+  }
+
+  .card,
+  .response,
+  .stats,
+  .status-message,
+  .loading-message,
+  #promptContainer,
+  .pdf-item {
+    background: var(--card-background);
+    border-color: var(--border-color);
+  }
+
+  input[type="file"],
+  input[type="text"],
+  #promptType {
+    background-color: #555;
+    color: #fff;
+  }
+}
+
+/* Smooth Transitions for Hover and Focus */
+a,
+button,
+.nav-link,
+input[type="file"],
+input[type="text"],
+#promptType {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Consistent Spacing and Alignment */
+* {
+  box-sizing: border-box;
+}
+
+.container,
+.section-group,
+.button-container,
+#pdfList {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.section-group,
+.button-container {
+  justify-content: space-between;
+}
+
+/* Enhancements for Readability */
+body,
+h1,
+h2,
+p,
+.nav-link,
+button,
+input,
+.status-message,
+.loading-message {
+  line-height: 1.6;
+  font-weight: normal;
+}
+
+h1,
+h2 {
+  font-weight: bold;
+}
+
+/* Navigation styles moved to navbar.component.scss */
+
+.app-name {
+  font-weight: bold;
+  color: variables.$primary-color;
+  margin-right: 10px;
+}
+
+.welcome {
+  font-family: 'Brush Script MT', cursive; /* Example of a handwritten-style font */
+  font-size: 35px; /* Adjust size as needed */
+  color: #ffffff; /* Example color, adjust as needed */
+  margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+  .pdf-item {
+    flex-direction: column; /* Stack items vertically on smaller screens */
+    padding: 15px;
+  }
+
+  .button-container {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 10px;
+    justify-content: center; /* Center buttons on smaller screens */
+  }
+
+  .button-container .btn {
+    width: 100%; /* Make buttons full width on small screens */
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pdf-item {
+    padding: 10px;
+  }
+
+  .button-container .btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+}

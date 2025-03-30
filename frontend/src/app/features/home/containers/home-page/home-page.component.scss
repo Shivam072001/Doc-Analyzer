@@ -1,0 +1,33 @@
+.container.card {
+  /* Add any specific styling for the home page container if needed */
+}
+
+.section-group {
+  /* Styles for the section groups are in styles.scss */
+}
+
+.section {
+  /* Styles for individual sections are in styles.scss */
+}
+
+.navigation {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.navigation .button {
+  background-color: #6c757d;
+  color: #ffffff;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: normal;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.navigation .button:hover {
+  background-color: #5a6268;
+  transform: translateY(-2px);
+}

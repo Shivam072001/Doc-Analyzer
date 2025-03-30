@@ -1,0 +1,16 @@
+.upload-section {
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--card-background);
+  box-shadow: var(--box-shadow);
+}
+
+#pdfFile {
+  /* Styles for the input are in styles.scss */
+}
+
+button {
+  /* Styles for the button are in styles.scss */
+  margin-top: 10px;
+}

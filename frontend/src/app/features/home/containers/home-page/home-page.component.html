@@ -1,0 +1,46 @@
+<div class="container card">
+  <app-navbar></app-navbar>
+  <div class="section-group">
+    <div class="card section">
+      <app-pdf-query-section
+        [promptTypes]="promptTypes"
+        [(query)]="queryPDF"
+        [response]="queryResponse"
+        (ask)="askPDF()"
+        (clearChat)="clearChatHistory()"
+        [chatHistoryStatus]="chatHistoryStatus"
+        [isLoading]="isLoadingPDFQuery"
+      ></app-pdf-query-section>
+    </div>
+  </div>
+
+  <div class="section-group">
+    <div class="card section">
+      <app-ai-query-section
+        [(query)]="queryAI"
+        [response]="queryResponseAI"
+        (ask)="askAI()"
+        (copyAndAsk)="copyTextAndSubmit()"
+        [isLoading]="isLoadingAIQuery"
+      ></app-ai-query-section>
+    </div>
+  </div>
+
+  <div class="section-group">
+    <div class="card section">
+      <app-usage-statistics-section
+        [pdfUsage]="pdfUsageStats"
+        [queryUsage]="queryUsageStats"
+      ></app-usage-statistics-section>
+    </div>
+  </div>
+
+  <div class="navigation">
+    <a
+      routerLink="/pdf-management"
+      class="button"
+      (click)="handleNavigation($event)"
+      >PDF Management</a
+    >
+  </div>
+</div>

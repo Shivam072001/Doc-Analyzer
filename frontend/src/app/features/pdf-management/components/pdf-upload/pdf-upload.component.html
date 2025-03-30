@@ -1,0 +1,11 @@
+<div class="upload-section">
+  <h2>Upload New PDF</h2>
+  <p>
+    Upload a new PDF document to be processed and made available for querying.
+  </p>
+  <input type="file" id="pdfFile" (change)="onFileSelected($event)" />
+  <button [disabled]="isLoading" (click)="uploadFile()">
+    <app-spinner *ngIf="isLoading"></app-spinner>
+    <span *ngIf="!isLoading">Upload</span>
+  </button>
+</div>
