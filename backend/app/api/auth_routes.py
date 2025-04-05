@@ -6,67 +6,68 @@ import jwt
 import datetime
 from ..core.models.user import User
 
-auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+def init_app(auth_bp): # Update parameter name to avoid shadowing
 
-def generate_jwt(username):
-    utc_now = datetime.datetime.now(datetime.timezone.utc) # Use timezone-aware UTC datetime
-    payload = {
-        'exp': utc_now + datetime.timedelta(hours=24),  # Token expiration time
-        'iat': utc_now,
-        'sub': username
-    }
-    return jwt.encode(
-        payload,
-        current_app.config['JWT_SECRET_KEY'],
-        algorithm='HS256'
-    )
+    def generate_jwt(username):
+        utc_now = datetime.datetime.now(datetime.timezone.utc) # Use timezone-aware UTC datetime
+        payload = {
+            'exp': utc_now + datetime.timedelta(hours=24),  # Token expiration time
+            'iat': utc_now,
+            'sub': username
+        }
+        return jwt.encode(
+            payload,
+            current_app.config['JWT_SECRET_KEY'],
+            algorithm='HS256'
+        )
 
-@auth_bp.route('/signup', methods=['POST'])
-def signup():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
 
-    if not username or not password:
-        return jsonify({'message': 'Username and password are required'}), 400
+    @auth_bp.route('/signup', methods=['POST'])
+    def signup():
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
 
-    users_collection = g.db.users
+        if not username or not password:
+            return jsonify({'message': 'Username and password are required'}), 400
 
-    if users_collection.find_one({'username': username}):
-        return jsonify({'message': 'Username already exists'}), 409
+        users_collection = g.db.users
 
-    hashed_password = generate_password_hash(password)
-    new_user = User(username=username, password=hashed_password)
-    users_collection.insert_one(new_user.to_dict())
+        if users_collection.find_one({'username': username}):
+            return jsonify({'message': 'Username already exists'}), 409
 
-    return jsonify({'message': 'User registered successfully'}), 201
+        hashed_password = generate_password_hash(password)
+        new_user = User(username=username, password=hashed_password)
+        users_collection.insert_one(new_user.to_dict())
 
-@auth_bp.route('/signin', methods=['POST'])
-def signin():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
+        return jsonify({'message': 'User registered successfully'}), 201
 
-    if not username or not password:
-        return jsonify({
-            'message': 'Username and password are required',
-            'status': 'failed'
-            }), 400
+    @auth_bp.route('/signin', methods=['POST'])
+    def signin():
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
 
-    users_collection = g.db.users
+        if not username or not password:
+            return jsonify({
+                'message': 'Username and password are required',
+                'status': 'failed'
+                }), 400
 
-    user_data = users_collection.find_one({'username': username})
+        users_collection = g.db.users
 
-    if user_data and check_password_hash(user_data['password'], password):
-        token = generate_jwt(username)
-        return jsonify({
-            'message': 'Logged in successfully',
-            'username': username,
-            'token': token,
-            'status': 'success'
-        }), 200
-    else:
-        return jsonify({
-            'message': 'Invalid username or password',
-            'status': 'failed'
-            }), 401
+        user_data = users_collection.find_one({'username': username})
+
+        if user_data and check_password_hash(user_data['password'], password):
+            token = generate_jwt(username)
+            return jsonify({
+                'message': 'Logged in successfully',
+                'username': username,
+                'token': token,
+                'status': 'success'
+            }), 200
+        else:
+            return jsonify({
+                'message': 'Invalid username or password',
+                'status': 'failed'
+                }), 401

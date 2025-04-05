@@ -30,4 +30,62 @@
   <span id="chatHistoryStatus" class="status-message">{{
     chatHistoryStatus
   }}</span>
+
+  <div class="document-classification-section" style="margin-top: 20px">
+    <h2>Classify Document</h2>
+    <app-select
+      id="classificationModel"
+      label="Select Model:"
+      [options]="availableModels"
+      (selectionChange)="onClassificationModelChange($event)"
+    ></app-select>
+
+    <textarea
+      id="documentTextToClassify"
+      placeholder="Enter text to classify"
+      [(ngModel)]="documentTextToClassify"
+      style="
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        min-height: 100px;
+      "
+    ></textarea>
+
+    <button
+      id="classifyDocumentButton"
+      (click)="classifyDocument()"
+      [disabled]="
+        isClassifying || !selectedClassificationModel || !documentTextToClassify
+      "
+      style="
+        margin-top: 10px;
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      "
+    >
+      <div *ngIf="isClassifying" class="spinner"></div>
+      {{ !isClassifying ? "Classify" : "" }}
+    </button>
+
+    <div
+      *ngIf="classificationResult"
+      style="
+        margin-top: 10px;
+        border: 1px solid #eee;
+        padding: 10px;
+        border-radius: 4px;
+      "
+    >
+      <h3>Classification Result:</h3>
+      <pre>{{ classificationResult | json }}</pre>
+    </div>
+  </div>
 </div>

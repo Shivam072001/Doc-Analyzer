@@ -7,7 +7,8 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { ToastService } from './components/toast/toast.service';
 import { MultiSelectDropdownComponent } from './components/multi-select/multi-select.component';
-import { SelectComponent } from './components/sort-data/select.component';
+import { SelectComponent } from './components/select/select.component';
+import { DocumentService } from './models/services/document.service';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,6 @@ import { SelectComponent } from './components/sort-data/select.component';
     SelectComponent,
     ToastComponent,
   ],
-  providers: [ToastService],
+  providers: [ToastService, DocumentService],
 })
 export class SharedModule {}

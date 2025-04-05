@@ -137,4 +137,3 @@ PyJWT
 python-docx 
 openpyxl
 transformers
-enum

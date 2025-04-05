@@ -2,11 +2,17 @@ from flask import Flask, request, jsonify
 from ..core.models.ai_models import DocumentClassifier
 from ..core.enums import AvailableModels  # Import the enum
 
-app = Flask(__name__)
 document_classifier_instance = None
 
 def init_app(api_bp):
-    @app.route('/set_model', methods=['POST'])
+    def chunk_text(text: str, chunk_size: int = 500) -> list[str]:
+        """Splits text into chunks of a specified size."""
+        chunks = []
+        for i in range(0, len(text), chunk_size):
+            chunks.append(text[i:i + chunk_size])
+        return chunks
+
+    @api_bp.route('/set_model', methods=['POST'])
     def set_model():
         global document_classifier_instance
         data = request.get_json()
@@ -20,7 +26,7 @@ def init_app(api_bp):
         except ValueError as e:
             return jsonify({"error": str(e)}), 400
 
-    @app.route('/classify', methods=['POST'])
+    @api_bp.route('/classify', methods=['POST'])
     def classify_document():
         if document_classifier_instance is None:
             return jsonify({"error": "No model has been set. Please call /set_model first."}), 400
@@ -30,20 +36,23 @@ def init_app(api_bp):
             return jsonify({"error": "Missing 'document_text' in request body"}), 400
 
         document_text = data['document_text']
-        prediction = document_classifier_instance.predict(document_text)
+        chunk_size = 500  # You can configure this value
+        chunks = chunk_text(document_text, chunk_size)
+        all_predictions = []
 
-        if prediction:
-            return jsonify(prediction), 200
-        else:
-            return jsonify({"message": "Could not classify the document or an error occurred."}), 200
+        for chunk in chunks:
+            prediction = document_classifier_instance.predict(chunk)
+            if prediction:
+                all_predictions.append(prediction)
+            else:
+                all_predictions.append({"error": "Could not classify this chunk or an error occurred."})
 
-    @app.route('/available_models', methods=['GET'])
+        return jsonify({"predictions": all_predictions}), 200
+
+    @api_bp.route('/available_models', methods=['GET'])
     def get_available_models():
         """
         Returns a list of predefined Hugging Face models from the enum.
         """
         models = [model.to_dict() for model in AvailableModels]
         return jsonify({"models": models}), 200
-
-    if __name__ == '__main__':
-        app.run(debug=True)

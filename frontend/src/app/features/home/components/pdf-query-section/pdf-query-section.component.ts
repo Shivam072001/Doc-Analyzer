@@ -8,9 +8,17 @@ import {
   ElementRef,
   OnDestroy,
   QueryList,
+  OnInit,
 } from '@angular/core';
-import { fromEvent, Subscription, takeUntil } from 'rxjs';
+import { fromEvent, Subscription, takeUntil, from } from 'rxjs'; // Import 'from'
 import { Subject, merge } from 'rxjs';
+import { ApiService } from '../../../../core/http/services/api.service';
+import { DocumentService } from '../../../../shared/models/services/document.service';
+
+interface SelectOption {
+  label: string;
+  value: string;
+}
 
 @Component({
   selector: 'app-pdf-query-section',
@@ -18,7 +26,9 @@ import { Subject, merge } from 'rxjs';
   templateUrl: './pdf-query-section.component.html',
   styleUrls: ['./pdf-query-section.component.scss'],
 })
-export class PdfQuerySectionComponent implements AfterViewInit, OnDestroy {
+export class PdfQuerySectionComponent
+  implements AfterViewInit, OnDestroy, OnInit
+{
   @Input() promptTypes: string[] = [];
   @Input() query: string = '';
   @Input() response: string = '';
@@ -37,6 +47,91 @@ export class PdfQuerySectionComponent implements AfterViewInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
   private destroy$ = new Subject<void>();
+
+  // New properties for document classification
+  availableModels: SelectOption[] = [];
+  selectedClassificationModel: string = '';
+  documentTextToClassify: string = '';
+  classificationResult: any;
+  isClassifying: boolean = false;
+
+  constructor(private readonly documentService: DocumentService) {}
+
+  ngOnInit(): void {
+    this.fetchAvailableModels();
+  }
+
+  fetchAvailableModels(): void {
+    from(this.documentService.getAvailableModels<{ models: SelectOption[] }>())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (data: { models: SelectOption[] }) => {
+          this.availableModels = data.models;
+          console.log('Available models:', this.availableModels);
+        },
+        (error: any) => {
+          console.error('Error fetching available models:', error);
+          // Handle error appropriately (e.g., display a message to the user)
+        }
+      );
+  }
+
+  onClassificationModelChange(modelValue: string): void {
+    this.selectedClassificationModel = modelValue;
+    console.log(
+      'Selected classification model:',
+      this.selectedClassificationModel
+    );
+    // Optionally, immediately set the model on the backend
+    // this.setClassificationModelOnBackend(this.selectedClassificationModel);
+  }
+
+  setClassificationModelOnBackend(modelName: string): void {
+    this.isClassifying = true;
+    from(this.documentService.setModel(modelName))
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (response: any) => {
+          console.log('Model set on backend:', response);
+          this.classifyDocument();
+        },
+        (error: any) => {
+          console.error('Error setting model on backend:', error);
+          this.isClassifying = false;
+          // Handle error
+        }
+      );
+  }
+
+  classifyDocument(): void {
+    if (!this.selectedClassificationModel) {
+      alert('Please select a document classification model.');
+      return;
+    }
+    if (!this.documentTextToClassify) {
+      alert('Please enter the document text to classify.');
+      return;
+    }
+
+    this.isClassifying = true;
+    from(
+      this.documentService.classifyDocument(this.documentTextToClassify)
+    )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (response: any) => {
+          console.log('Classification response:', response);
+          this.classificationResult = response;
+          this.isClassifying = false;
+        },
+        (error: any) => {
+          console.error('Error classifying document:', error);
+          this.classificationResult = { error: 'Could not classify document.' };
+          this.isClassifying = false;
+          // Handle error
+        }
+      );
+  }
 
   ngAfterViewInit(): void {
     console.log('ngAfterViewInit called');
@@ -156,4 +251,3 @@ export class PdfQuerySectionComponent implements AfterViewInit, OnDestroy {
     this.clearChat.emit();
   }
 }
-

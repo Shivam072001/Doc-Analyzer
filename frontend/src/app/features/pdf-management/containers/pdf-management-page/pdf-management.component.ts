@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../../core/http/services/api.service';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
+import { DocumentService } from '../../../../shared/models/services/document.service';
 
 interface DocumentStatistic {
   pdf_count: number;
@@ -35,7 +35,7 @@ export class PdfManagementPageComponent implements OnInit {
   isClearingDatabase: boolean = false;
 
   constructor(
-    private readonly apiService: ApiService,
+    private readonly documentService: DocumentService,
     private readonly toastService: ToastService
   ) {}
 
@@ -46,9 +46,8 @@ export class PdfManagementPageComponent implements OnInit {
 
   async loadStatistics(): Promise<void> {
     try {
-      const stats = await this.apiService.get<DocumentStatistic>(
-        '/documentManagement'
-      );
+      const stats =
+        await this.documentService.getFileManagementStats<DocumentStatistic>();
       this.documentStatistic = stats;
     } catch (error: any) {
       this.toastService.showToast(
@@ -69,10 +68,7 @@ export class PdfManagementPageComponent implements OnInit {
     formData.append('file', file);
 
     try {
-      const result: any = await this.apiService.postFormData(
-        '/upload_document',
-        formData
-      );
+      const result: any = await this.documentService.uploadFile(file);
       console.log(result);
       if (result.status === 'success') {
         this.toastService.showToast(
@@ -106,7 +102,7 @@ export class PdfManagementPageComponent implements OnInit {
   async listDocuments(): Promise<void> {
     this.isLoadingList = true;
     try {
-      const result: any = await this.apiService.get('/list_documents');
+      const result: any = await this.documentService.listDocuments();
       console.log('listDocuments: ', result);
       this.documentList = [];
       this.processFiles(result.pdf_files, 'pdf');
@@ -132,10 +128,7 @@ export class PdfManagementPageComponent implements OnInit {
     if (!confirm(`Are you sure you want to delete ${fileName}?`)) return;
 
     try {
-      const result: any = await this.apiService.post('/delete_document', {
-        file_name: fileName,
-        file_type: fileType,
-      });
+      const result: any = await this.documentService.deleteDocument(fileName, fileType);
       if (result.status === 'success') {
         this.toastService.showToast(
           'Document deleted successfully.',
@@ -166,7 +159,7 @@ export class PdfManagementPageComponent implements OnInit {
       return;
     this.isClearingDatabase = true;
     try {
-      const result: any = await this.apiService.post('/clear_db');
+      const result: any = await this.documentService.clearDb();
       this.toastService.showToast(
         result.error
           ? `Error: ${result.error}`

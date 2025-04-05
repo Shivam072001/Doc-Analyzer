@@ -7,8 +7,6 @@ from ..config.config import Config
 from ..services.document_service import DocumentService
 import logging
 
-api_bp = Blueprint('api', __name__, url_prefix='/api') # Assuming this should be api_bp
-
 document_service = DocumentService(
     {
         "pdf": Config.PDF_DIR,

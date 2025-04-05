@@ -1,11 +1,8 @@
-from flask import request, jsonify, send_from_directory, Blueprint
+from flask import request, jsonify, send_from_directory
 from ..services.document_service import DocumentService
 from ..services.vector_store_service import VectorStoreService
 from ..config.config import Config
 import logging
-import os
-from datetime import datetime, timedelta
-import random
 
 document_service = DocumentService(
     {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../../core/http/services/api.service';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
+import { DocumentService } from '../../../../shared/models/services/document.service';
 
 @Component({
   selector: 'app-home-page',
@@ -21,7 +21,7 @@ export class HomePageComponent implements OnInit {
   isLoadingAIQuery: boolean = false;
 
   constructor(
-    private readonly apiService: ApiService,
+    private readonly documentService: DocumentService,
     private readonly toastService: ToastService
   ) {}
 
@@ -31,9 +31,9 @@ export class HomePageComponent implements OnInit {
 
   async fetchPrompts(): Promise<void> {
     try {
-      const prompts = await this.apiService.get<{ [key: string]: string }>(
-        '/prompts'
-      );
+      const prompts = await this.documentService.getPrompts<{
+        [key: string]: string;
+      }>();
       this.promptTypes = Object.keys(prompts);
     } catch (error: any) {
       this.toastService.showToast(
@@ -59,10 +59,7 @@ export class HomePageComponent implements OnInit {
     )?.value;
 
     try {
-      const result: any = await this.apiService.post('/ask_document', {
-        query: this.queryPDF,
-        promptType,
-      });
+      const result: any = await this.documentService.askDocument(this.queryPDF, promptType);
       console.log(result);
       this.queryResponse = await this.formatResponse(result);
       if (result.document_usage) {
@@ -94,9 +91,7 @@ export class HomePageComponent implements OnInit {
     this.queryResponseAI =
       '<div class="spinner"></div><p class="loading-message">Fetching response, please wait...</p>';
     try {
-      const result: any = await this.apiService.post('/ai', {
-        query: this.queryAI,
-      });
+      const result: any = await this.documentService.askAi(this.queryAI);
       this.queryResponseAI = await this.formatResponse(result);
     } catch (error: any) {
       this.queryResponseAI = `<p>An error occurred while processing the AI query: ${error.message}</p>`;
@@ -116,7 +111,7 @@ export class HomePageComponent implements OnInit {
 
   async clearChatHistory(): Promise<void> {
     try {
-      const data: any = await this.apiService.post('/clear_chat_history');
+      const data: any = await this.documentService.clearChatHistory();
       this.queryResponse = '';
       this.chatHistoryStatus =
         data.status === 'Chat history cleared successfully'
