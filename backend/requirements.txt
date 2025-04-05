@@ -134,4 +134,7 @@ flask_pymongo
 pymongo
 bcrypt
 PyJWT
-functools
+python-docx 
+openpyxl
+transformers
+enum

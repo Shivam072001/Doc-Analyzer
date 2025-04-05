@@ -1,0 +1,61 @@
+<div class="multi-select-container">
+  <div class="selected-options" (click)="toggleDropdown()">
+    <span class="placeholder" *ngIf="selectedOptions.length === 0">{{
+      placeholder
+    }}</span>
+    <div class="tags-container">
+      <div class="tag" *ngFor="let option of selectedOptions">
+        {{ option }}
+        <span
+          class="remove-tag"
+          (click)="removeSelection(option); $event.stopPropagation()"
+          >×</span
+        >
+      </div>
+    </div>
+    <div class="actions-right">
+      <span
+        class="clear-all"
+        *ngIf="selectedOptions.length > 0"
+        (click)="clearAllSelection($event)"
+        >×</span
+      >
+      <div class="arrow" [class.open]="isOpen"></div>
+    </div>
+  </div>
+
+  <ul class="dropdown-list" *ngIf="isOpen">
+    <li class="search-container">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search..."
+        (input)="updateSearchTerm($event)"
+        (click)="$event.stopPropagation()"
+      />
+      <button class="clear-search" *ngIf="searchTerm" (click)="clearSearch()">×</button>
+      <div class="exact-match-toggle">
+        <input
+          type="checkbox"
+          id="exactMatch"
+          (change)="toggleExactMatch()"
+        />
+      </div>
+    </li>
+    <li
+      *ngFor="let option of filteredOptions"
+      class="option-item"
+      (click)="onOptionSelect(option)"
+    >
+      <input
+        type="checkbox"
+        [checked]="isSelected(option)"
+        (change)="$event.stopPropagation()"
+      />
+      <span>{{ option }}</span>
+    </li>
+    <li class="no-results" *ngIf="filteredOptions.length === 0 && searchTerm">
+      No results found.
+    </li>
+  </ul>
+</div>

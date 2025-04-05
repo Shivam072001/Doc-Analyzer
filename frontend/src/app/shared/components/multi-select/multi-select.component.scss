@@ -1,0 +1,130 @@
+.multi-select-container {
+  position: relative;
+  width: 300px; /* Adjust as needed */
+}
+
+.selected-options {
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .actions-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .clear-all {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      font-size: 1.2em;
+      color: #777;
+      opacity: 0.7;
+      &:hover {
+        opacity: 1;
+        color: #333;
+      }
+    }
+
+    .arrow {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid #333;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .arrow.open {
+      transform: rotate(180deg);
+    }
+  }
+
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+
+    .tag {
+      background-color: #f0f0f0;
+      color: #333;
+      padding: 4px 8px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      margin-right: 4px;
+    }
+  }
+}
+
+.dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 2px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  z-index: 10;
+  list-style: none;
+  padding: 0;
+  max-height: 200px; /* Adjust as needed */
+  overflow-y: auto;
+
+  .search-container {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+
+    .search-input {
+      flex-grow: 1;
+      border: 1px solid #000;
+      outline: none;
+      padding: 8px;
+      border-radius: 10px;
+    }
+
+    .clear-search {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin-left: 8px;
+      font-size: 1.2em;
+      color: #777;
+
+      &:hover {
+        color: #333;
+      }
+    }
+  }
+
+  .option-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex; /* Align checkbox and text */
+    align-items: center;
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+    }
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+
+  li.no-results {
+    padding: 8px 12px;
+    color: #777;
+  }
+}

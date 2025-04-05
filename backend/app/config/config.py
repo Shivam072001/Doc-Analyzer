@@ -8,8 +8,14 @@ class Config:
     DATA_DIR = os.path.join(BASE_DIR, '..', '..', 'data')
     DB_FOLDER = os.path.join(DATA_DIR, 'db')
     PDF_DIR = os.path.join(DATA_DIR, 'pdf')
+    DOCX_DIR = os.path.join(DATA_DIR, 'docx')
+    CSV_DIR = os.path.join(DATA_DIR, 'csv')
+    XLSX_DIR = os.path.join(DATA_DIR, 'xlsx')
     LOGS_DIR = os.path.join(BASE_DIR, '..', '..', 'logs')
     PDF_DIRECTORY = PDF_DIR  # For serving PDFs
+    DOCX_DIR = DOCX_DIR
+    CSV_DIR = CSV_DIR
+    XLSX_DIR = XLSX_DIR
 
     OLLAMA_MODEL = os.getenv('OLLAMA_MODEL', 'llama3.1')
     CHUNK_SIZE = int(os.getenv('CHUNK_SIZE', 2048))

@@ -10,7 +10,7 @@ import {
   QueryList,
 } from '@angular/core';
 import { fromEvent, Subscription, takeUntil } from 'rxjs';
-import { Subject } from 'rxjs';
+import { Subject, merge } from 'rxjs';
 
 @Component({
   selector: 'app-pdf-query-section',
@@ -157,4 +157,3 @@ export class PdfQuerySectionComponent implements AfterViewInit, OnDestroy {
   }
 }
 
-import { merge } from 'rxjs';

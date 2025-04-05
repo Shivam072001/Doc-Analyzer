@@ -1,0 +1,76 @@
+.select-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  .select-label {
+    font-weight: 500;
+    color: var(--text-color-secondary);
+  }
+
+  .select-wrapper {
+    position: relative;
+    display: inline-block;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    background-color: var(--input-background);
+    overflow: hidden; /* Hide the default arrow */
+  }
+
+  .select-select {
+    appearance: none; /* Remove default arrow */
+    padding: 10px 35px 10px 15px;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(
+      --input-background
+    ); /* Ensure background is consistent */
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-color-primary);
+    width: 150px; /* Adjust width as needed */
+    line-height: 1.5; /* Improve readability */
+    transition: border-color var(--transition-duration),
+      box-shadow var(--transition-duration);
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25);
+    }
+
+    /* Style for the dropdown options (limited control) */
+    option {
+      background-color: var(--input-background);
+      color: var(--text-color-primary);
+      padding: 8px 15px;
+      font-size: 14px;
+    }
+
+    /* Style for the hovered option (might be browser-dependent) */
+    option:hover {
+      background-color: #e9ecef;
+    }
+
+    /* Style for the selected option (might be browser-dependent) */
+    option:checked {
+      background-color: var(
+        --primary-color-light
+      ); /* Assuming you have a lighter primary color variable */
+      color: var(--button-text-color);
+    }
+  }
+
+  .select-arrow {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--text-color-secondary);
+    pointer-events: none;
+  }
+}

@@ -7,7 +7,7 @@
       (ask)="askPDF()"
       (clearChat)="clearChatHistory()"
       [chatHistoryStatus]="chatHistoryStatus"
-      [isLoading]="isLoadingPDFQuery"
+      [isLoading]="isLoadingDocumentQuery"
     ></app-pdf-query-section>
   </div>
 </div>
@@ -27,7 +27,7 @@
 <div class="section-group">
   <div class="card section">
     <app-usage-statistics-section
-      [pdfUsage]="pdfUsageStats"
+      [pdfUsage]="documentUsageStats"
       [queryUsage]="queryUsageStats"
     ></app-usage-statistics-section>
   </div>

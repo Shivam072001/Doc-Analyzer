@@ -1,19 +1,19 @@
 <div class="section-group">
   <div class="card section">
-    <app-pdf-upload
-      (upload)="uploadPDF($event)"
+    <app-document-upload
+      (upload)="uploadDocument($event)"
       [isLoading]="isLoadingUpload"
-    ></app-pdf-upload>
+    ></app-document-upload>
   </div>
 </div>
 
 <div class="section-group">
   <div class="card section">
-    <app-pdf-list
-      [pdfList]="pdfList"
-      (delete)="deletePDF($event)"
+    <app-document-list
+      [documentList]="documentList"
+      (delete)="deleteDocument($event.filename, $event.type)"
       [isLoading]="isLoadingList"
-    ></app-pdf-list>
+    ></app-document-list>
   </div>
 </div>
 
@@ -39,16 +39,19 @@
 
 <div class="section-group">
   <div class="card section">
-    <app-pdf-statistics
-      [pdfCount]="pdfStatistic.pdf_count"
-    ></app-pdf-statistics>
+    <app-document-statistics
+      [pdfCount]="documentStatistic.pdf_count"
+      [docxCount]="documentStatistic.docx_count"
+      [csvCount]="documentStatistic.csv_count"
+      [xlsxCount]="documentStatistic.xlsx_count"
+    ></app-document-statistics>
   </div>
 </div>
 
 <div class="section-group">
   <div class="card section">
     <h2>Document Statistics</h2>
-    <p>Total Documents in Chroma DB: {{ pdfStatistic.doc_count }}</p>
+    <p>Total Documents in Chroma DB: {{ documentStatistic.doc_count }}</p>
   </div>
 </div>
 

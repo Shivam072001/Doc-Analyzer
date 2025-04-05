@@ -6,16 +6,26 @@ import { ButtonComponent } from './components/button/button.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { ToastService } from './components/toast/toast.service';
+import { MultiSelectDropdownComponent } from './components/multi-select/multi-select.component';
+import { SelectComponent } from './components/sort-data/select.component';
 
 @NgModule({
-  declarations: [ButtonComponent, SpinnerComponent, ToastComponent],
+  declarations: [
+    ButtonComponent,
+    MultiSelectDropdownComponent,
+    SpinnerComponent,
+    SelectComponent,
+    ToastComponent,
+  ],
   imports: [CommonModule, FormsModule, RouterModule],
   exports: [
     CommonModule,
     FormsModule,
     RouterModule,
     ButtonComponent,
+    MultiSelectDropdownComponent,
     SpinnerComponent,
+    SelectComponent,
     ToastComponent,
   ],
   providers: [ToastService],

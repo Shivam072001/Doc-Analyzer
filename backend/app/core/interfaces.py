@@ -1,21 +1,49 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 class DocumentServiceInterface(ABC):
     @abstractmethod
-    def list_pdfs(self) -> List[str]:
+    def list_documents(self, file_type: str) -> List[str]:
+        """Lists documents of a specific type."""
+        pass
+    
+    def list_document_details(self, file_type: str) -> list[dict]:
+        """
+        Lists details of all documents of a specific type.
+
+        Args:
+            file_type (str): The type of the documents to list (e.g., "pdf", "docx", "csv", "xlsx").
+
+        Returns:
+            list[dict]: A list of dictionaries, where each dictionary represents a document
+                            and contains the following keys:
+                - "file_name" (str): The name of the file without the extension.
+                - "file_size" (int): The size of the file in bytes.
+                - "file_type" (str): The file extension (e.g., "pdf", "docx").
+                - "upload_date" (str): The last modification timestamp of the file in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.ffffff+HH:MM or YYYY-MM-DDTHH:MM:SSZ).
+                            Returns an empty list if the directory for the given file type
+                            does not exist or is empty.
+        """
+    pass
+
+    @abstractmethod
+    def upload_document(self, file) -> Dict[str, Any]:
+        """Uploads a document of any supported type."""
         pass
 
     @abstractmethod
-    def upload_pdf(self, file) -> Dict[str, Any]:
+    def delete_document(self, file_name: str, file_type: str) -> None:
+        """Deletes a specific document."""
         pass
 
     @abstractmethod
-    def delete_pdf(self, file_name: str) -> None:
+    def get_document_dir(self, file_type: str) -> Optional[str]:
+        """Gets the directory for a specific document type."""
         pass
 
     @abstractmethod
-    def clear_pdf_directory(self) -> None:
+    def clear_document_directory(self, file_type: str) -> None:
+        """Clears the directory for a specific document type."""
         pass
 
 class LLMServiceInterface(ABC):
@@ -71,7 +99,7 @@ class StatsServiceInterface(ABC):
         pass
 
     @abstractmethod
-    def get_pdf_usage_percentage(self) -> Dict[str, Dict[str, float]]:
+    def get_document_usage_percentage(self) -> Dict[str, Dict[str, float]]:
         pass
 
     @abstractmethod

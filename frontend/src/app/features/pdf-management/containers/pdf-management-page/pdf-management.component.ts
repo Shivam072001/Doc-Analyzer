@@ -2,8 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../core/http/services/api.service';
 import { ToastService } from '../../../../shared/components/toast/toast.service';
 
-interface PDFStatistic {
+interface DocumentStatistic {
   pdf_count: number;
+  docx_count: number;
+  csv_count: number;
+  xlsx_count: number;
   doc_count: number;
 }
 
@@ -14,26 +17,39 @@ interface PDFStatistic {
   styleUrls: ['./pdf-management-page.component.scss'],
 })
 export class PdfManagementPageComponent implements OnInit {
-  pdfStatistic: PDFStatistic = { pdf_count: 0, doc_count: 0 };
-  pdfList: string[] = [];
+  documentStatistic: DocumentStatistic = {
+    pdf_count: 0,
+    docx_count: 0,
+    csv_count: 0,
+    xlsx_count: 0,
+    doc_count: 0,
+  };
+  documentList: {
+    filename: string;
+    type: string;
+    size?: number;
+    uploadDate?: string;
+  }[] = [];
   isLoadingUpload: boolean = false;
   isLoadingList: boolean = false;
   isClearingDatabase: boolean = false;
 
   constructor(
-    private apiService: ApiService,
-    private toastService: ToastService
+    private readonly apiService: ApiService,
+    private readonly toastService: ToastService
   ) {}
 
   ngOnInit(): void {
     this.loadStatistics();
-    this.listPDFs();
+    this.listDocuments();
   }
 
   async loadStatistics(): Promise<void> {
     try {
-      const stats = await this.apiService.get<PDFStatistic>('/pdfManagement');
-      this.pdfStatistic = stats;
+      const stats = await this.apiService.get<DocumentStatistic>(
+        '/documentManagement'
+      );
+      this.documentStatistic = stats;
     } catch (error: any) {
       this.toastService.showToast(
         `Error loading statistics: ${error.message}`,
@@ -42,13 +58,9 @@ export class PdfManagementPageComponent implements OnInit {
     }
   }
 
-  async uploadPDF(file: File): Promise<void> {
-    // Receive the File object
+  async uploadDocument(file: File): Promise<void> {
     if (!file) {
-      this.toastService.showToast(
-        'Please select a PDF file to upload.',
-        'warning'
-      );
+      this.toastService.showToast('Please select a file to upload.', 'warning');
       return;
     }
 
@@ -57,14 +69,17 @@ export class PdfManagementPageComponent implements OnInit {
     formData.append('file', file);
 
     try {
-      const result: any = await this.apiService.postFormData('/pdf', formData);
+      const result: any = await this.apiService.postFormData(
+        '/upload_document',
+        formData
+      );
       console.log(result);
       if (result.status === 'success') {
         this.toastService.showToast(
-          `Success: ${result.status}\nFilename: ${result.filename}\nLoaded ${result.doc_len} documents\nLoaded len=${result.chunk_len} chunks`,
+          `Success: ${result.status}\nFilename: ${result.filename}\nType: ${result.file_type}\nLoaded ${result.doc_len} documents`,
           'success'
         );
-        this.listPDFs();
+        this.listDocuments();
         this.loadStatistics();
       } else {
         this.toastService.showToast(
@@ -75,40 +90,37 @@ export class PdfManagementPageComponent implements OnInit {
     } catch (error: any) {
       const errorMessage = error.message.includes('Status: 400')
         ? `${error.message.split('Response: ')[1]}`
-        : `An error occurred while uploading the PDF: ${error.message}`;
+        : `An error occurred while uploading the file: ${error.message}`;
       this.toastService.showToast(errorMessage, 'error');
     } finally {
       this.isLoadingUpload = false;
-      // Clear the file input (optional, might be handled in PdfUploadComponent)
-      const fileInput = document.getElementById('pdfFile') as HTMLInputElement;
+      const fileInput = document.getElementById(
+        'documentFile'
+      ) as HTMLInputElement;
       if (fileInput) {
         fileInput.value = '';
       }
     }
   }
 
-  async listPDFs(): Promise<void> {
+  async listDocuments(): Promise<void> {
     this.isLoadingList = true;
     try {
       const result: any = await this.apiService.get('/list_documents');
-      if (result.documents && result.documents.length > 0) {
-        const seenPDFs = new Set<string>();
-        this.pdfList = result.documents
-          .map((doc: any) => doc.source)
-          .filter((source: string) => {
-            if (!seenPDFs.has(source)) {
-              seenPDFs.add(source);
-              return true;
-            }
-            return false;
-          });
-      } else {
-        this.pdfList = [];
+      console.log('listDocuments: ', result);
+      this.documentList = [];
+      this.processFiles(result.pdf_files, 'pdf');
+      this.processFiles(result.docx_files, 'docx');
+      this.processFiles(result.csv_files, 'csv');
+      this.processFiles(result.xlsx_files, 'xlsx');
+      this.processFiles(result.doc_files, 'doc'); // Assuming you have 'doc_files' as well
+
+      if (this.documentList.length === 0) {
         this.toastService.showToast('No documents found.', 'info');
       }
     } catch (error: any) {
       this.toastService.showToast(
-        `Error listing PDFs: ${error.message}`,
+        `Error listing documents: ${error.message}`,
         'error'
       );
     } finally {
@@ -116,26 +128,30 @@ export class PdfManagementPageComponent implements OnInit {
     }
   }
 
-  async deletePDF(fileName: string): Promise<void> {
+  async deleteDocument(fileName: string, fileType: string): Promise<void> {
     if (!confirm(`Are you sure you want to delete ${fileName}?`)) return;
 
     try {
-      const result: any = await this.apiService.post('/delete_pdf', {
+      const result: any = await this.apiService.post('/delete_document', {
         file_name: fileName,
+        file_type: fileType,
       });
       if (result.status === 'success') {
-        this.toastService.showToast('PDF deleted successfully.', 'success');
-        this.listPDFs();
+        this.toastService.showToast(
+          'Document deleted successfully.',
+          'success'
+        );
+        this.listDocuments();
         this.loadStatistics();
       } else {
         this.toastService.showToast(
-          `Failed to delete PDF: ${result.error || 'Unknown error'}`,
+          `Failed to delete document: ${result.error || 'Unknown error'}`,
           'error'
         );
       }
     } catch (error: any) {
       this.toastService.showToast(
-        `Error deleting PDF: ${error.message}`,
+        `Error deleting document: ${error.message}`,
         'error'
       );
     }
@@ -144,7 +160,7 @@ export class PdfManagementPageComponent implements OnInit {
   async clearDatabase(): Promise<void> {
     if (
       !confirm(
-        'Are you sure you want to delete all PDFs and clear the database?'
+        'Are you sure you want to delete all documents and clear the database?'
       )
     )
       return;
@@ -157,7 +173,7 @@ export class PdfManagementPageComponent implements OnInit {
           : 'Database and files cleared successfully',
         result.error ? 'error' : 'success'
       );
-      this.listPDFs();
+      this.listDocuments();
       this.loadStatistics();
     } catch (error: any) {
       this.toastService.showToast(`Network Error: ${error.message}`, 'error');
@@ -165,6 +181,19 @@ export class PdfManagementPageComponent implements OnInit {
       this.isClearingDatabase = false;
     }
   }
+
+  processFiles = (files: any[], type: string) => {
+    if (files && files.length > 0) {
+      this.documentList = this.documentList.concat(
+        files.map((file: any) => ({
+          filename: file.filename,
+          type: type,
+          size: file.size,
+          uploadDate: file.uploadDate,
+        }))
+      );
+    }
+  };
 
   handleNavigation(event: Event): void {
     // You can add logic here if needed before navigation

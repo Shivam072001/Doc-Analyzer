@@ -14,15 +14,15 @@ export class HomePageComponent implements OnInit {
   queryAI: string = '';
   queryResponse: string = '';
   queryResponseAI: string = '';
-  pdfUsageStats: any = {};
+  documentUsageStats: any = {};
   queryUsageStats: any = {};
   chatHistoryStatus: string = '';
-  isLoadingPDFQuery: boolean = false;
+  isLoadingDocumentQuery: boolean = false;
   isLoadingAIQuery: boolean = false;
 
   constructor(
-    private apiService: ApiService,
-    private toastService: ToastService
+    private readonly apiService: ApiService,
+    private readonly toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -51,7 +51,7 @@ export class HomePageComponent implements OnInit {
       );
       return;
     }
-    this.isLoadingPDFQuery = true;
+    this.isLoadingDocumentQuery = true;
     this.queryResponse =
       '<div class="spinner"></div><p class="loading-message">Fetching response, please wait...</p>';
     const promptType = (
@@ -59,14 +59,14 @@ export class HomePageComponent implements OnInit {
     )?.value;
 
     try {
-      const result: any = await this.apiService.post('/ask_pdf', {
+      const result: any = await this.apiService.post('/ask_document', {
         query: this.queryPDF,
         promptType,
       });
       console.log(result);
       this.queryResponse = await this.formatResponse(result);
-      if (result.pdf_usage) {
-        this.pdfUsageStats = result.pdf_usage;
+      if (result.document_usage) {
+        this.documentUsageStats = result.document_usage;
       }
       if (result.query_usage) {
         this.queryUsageStats = result.query_usage;
@@ -78,7 +78,7 @@ export class HomePageComponent implements OnInit {
         'error'
       );
     } finally {
-      this.isLoadingPDFQuery = false;
+      this.isLoadingDocumentQuery = false;
     }
   }
 

@@ -8,7 +8,7 @@ class StatsService(StatsServiceInterface):
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(StatsService, cls).__new__(cls)
-            cls._instance.pdf_usage_count = {}
+            cls._instance.document_usage_count = {}  # Updated name
             cls._instance.query_usage_count = {}
             cls._instance.chat_history = []
         return cls._instance
@@ -18,29 +18,29 @@ class StatsService(StatsServiceInterface):
 
     def update_usage_counts(self, documents: List) -> None:
         for doc in documents:
-            pdf_source = doc.metadata.get("source")
-            if pdf_source:
-                self.pdf_usage_count[pdf_source] = self.pdf_usage_count.get(pdf_source, 0) + 1
-                self.query_usage_count[pdf_source] = self.query_usage_count.get(pdf_source, 0) + 1
+            doc_source = doc.metadata.get("source")
+            if doc_source:
+                self.document_usage_count[doc_source] = self.document_usage_count.get(doc_source, 0) + 1
+                self.query_usage_count[doc_source] = self.query_usage_count.get(doc_source, 0) + 1
 
-    def get_pdf_usage_percentage(self) -> Dict[str, Dict[str, float]]:
-        total_queries = sum(self.pdf_usage_count.values())
+    def get_document_usage_percentage(self) -> Dict[str, Dict[str, float]]: # Updated name
+        total_queries = sum(self.document_usage_count.values())
         return {
-            pdf: {
+            doc: {
                 "count": count,
                 "percentage": (count / total_queries * 100) if total_queries > 0 else 0,
             }
-            for pdf, count in self.pdf_usage_count.items()
+            for doc, count in self.document_usage_count.items()
         }
 
     def get_query_usage_percentage(self) -> Dict[str, Dict[str, float]]:
         total_queries = sum(self.query_usage_count.values())
         return {
-            pdf: {
+            doc: {
                 "count": count,
                 "percentage": (count / total_queries * 100) if total_queries > 0 else 0,
             }
-            for pdf, count in self.query_usage_count.items()
+            for doc, count in self.query_usage_count.items()
         }
 
     def create_context_with_metadata(self, documents: List) -> List[Dict[str, str]]:

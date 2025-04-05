@@ -1,86 +1,220 @@
+@use "sass:color";
 .pdf-list-section {
   padding: 20px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   background-color: var(--card-background);
   box-shadow: var(--box-shadow);
+
+  .filter-sort-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Optional: Vertically align items */
+    margin-bottom: 20px; /* Adjust margin as needed */
+    gap: 20px; /* Adjust gap between filter and sort */
+  }
+
+  .filter-section {
+    // You might not need specific styling here anymore as layout is handled by the container
+  }
+
+  .sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-light);
+    padding: 10px; /* Add some padding to the sort controls container */
+  }
+
+  .sort-order-button {
+    background-color: var(--primary-color);
+    color: var(--button-text-color);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: background-color var(--transition-duration);
+
+    &:hover {
+      background-color: #3399ff;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.5);
+    }
+
+    .arrow-up,
+    .arrow-down {
+      display: inline-block;
+      font-size: 16px;
+      line-height: 1;
+    }
+  }
 }
 
-#pdfList {
-  margin: 20px;
-}
-
-/* Container for each PDF item */
-.pdf-item {
-  display: flex;
-  justify-content: space-between; /* Space between content and buttons */
-  align-items: center; /* Align items vertically in the center */
+.documents-table {
+  width: 100%;
+  border-collapse: collapse;
   margin-bottom: 20px;
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
-  background-color: var(--card-background);
-}
 
-/* Button container to hold buttons */
-.button-container {
-  display: flex;
-  gap: 10px; /* Space between buttons */
-}
+  th,
+  td {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    text-align: left;
+  }
 
-/* General button style */
-.button-container .btn {
-  padding: 8px 12px;
-  font-size: 14px;
-  border: none;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: background-color var(--transition-duration),
-    transform var(--transition-duration);
-}
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
 
-/* Specific button styles */
-.view-button {
-  background-color: #007bff;
-}
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
 
-.view-button:hover {
-  background-color: #0056b3;
-}
+  .actions-dropdown {
+    width: 100%;
+    position: relative;
+    display: inline-block;
 
-.delete-button {
-  background-color: #dc3545;
-}
+    .actions-button {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      background-color: #007bff;
+      cursor: pointer;
+      transition: background-color var(--transition-duration);
 
-.delete-button:hover {
-  background-color: #c82333;
+      &:hover {
+        background-color: color.adjust(#007bff, $lightness: 5%);
+      }
+    }
+
+    .actions-dropdown-content {
+      width: 100%;
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 100px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+      right: 0; /* Align to the right */
+
+      button {
+        display: block;
+        padding: 10px;
+        text-align: left;
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        width: 100%;
+        border-bottom: 1px solid var(--border-color);
+        color: #333;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background-color: #e0e0e0;
+        }
+      }
+    }
+
+    &:hover .actions-dropdown-content {
+      display: block;
+    }
+  }
 }
 
 @media (max-width: 768px) {
-  .pdf-item {
-    flex-direction: column; /* Stack items vertically on smaller screens */
-    padding: 15px;
+  .pdf-list-section {
+    .filter-sort-container {
+      flex-direction: column; /* Align items vertically */
+      align-items: stretch; /* Make items take full width */
+    }
+
+    .filter-section {
+      margin-bottom: 15px; /* Add some space below the filter */
+    }
+
+    .sort-controls {
+      // flex-direction: column; /* Align sort controls vertically */
+      align-items: stretch; /* Make sort controls take full width */
+      gap: 10px; /* Adjust gap between sort elements */
+      padding: 15px; /* Adjust padding for vertical layout */
+    }
   }
 
-  .button-container {
-    flex-direction: column; /* Stack buttons vertically */
-    gap: 10px;
-    justify-content: center; /* Center buttons on smaller screens */
+  .documents-table {
+    thead {
+      display: none; /* Hide table headers on smaller screens */
+    }
+
+    tbody tr {
+      display: block;
+      margin-bottom: 15px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 10px;
+    }
+
+    tbody td {
+      display: block;
+      padding: 5px 0;
+      border: none;
+
+      &:before {
+        content: attr(data-label);
+        font-weight: bold;
+        display: inline-block;
+        width: 120px; /* Adjust width as needed */
+        margin-right: 10px;
+      }
+    }
   }
 
-  .button-container .btn {
-    width: 100%; /* Make buttons full width on small screens */
-    font-size: 16px;
-  }
-}
+  .actions-dropdown {
+    width: 100%;
+    margin-top: 10px;
 
-@media (max-width: 480px) {
-  .pdf-item {
-    padding: 10px;
-  }
+    .actions-button {
+      width: 100%;
+      text-align: center;
+    }
 
-  .button-container .btn {
-    padding: 10px;
-    font-size: 14px;
+    .actions-dropdown-content {
+      position: static;
+      display: none; /* Initially hidden on small screens */
+      border: none;
+      box-shadow: none;
+
+      button {
+        width: 100%;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        margin-bottom: 5px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    &:hover .actions-dropdown-content {
+      display: block; /* Show on hover/focus on small screens */
+    }
   }
 }

@@ -1,17 +1,80 @@
 <div class="pdf-list-section">
-  <h2>Available PDF Documents</h2>
-  <p>View and access the list of PDFs that have been uploaded to the system.</p>
-  <div *ngIf="isLoading"><app-spinner></app-spinner> Loading PDFs...</div>
-  <ul id="pdfList" *ngIf="!isLoading && pdfList.length > 0">
-    <li *ngFor="let pdf of pdfList" class="pdf-item">
-      {{ pdf }}
-      <div class="button-container">
-        <button class="btn view-button" (click)="viewPDF(pdf)">View</button>
-        <button class="btn delete-button" (click)="onDelete(pdf)">
-          Delete
-        </button>
-      </div>
-    </li>
-  </ul>
-  <p *ngIf="!isLoading && pdfList.length === 0">No documents found.</p>
+  <h2>Available Documents</h2>
+  <p>
+    View and access the list of documents that have been uploaded to the system.
+  </p>
+
+  <div class="filter-sort-container">
+    <div class="filter-section">
+      <app-multi-select
+        id="fileTypeFilter"
+        [options]="availableFileTypes"
+        placeholder="Filter By File Type"
+        (selectionChange)="filterDocumentsByTypes($event)"
+      ></app-multi-select>
+    </div>
+
+    <div class="sort-controls">
+      <app-select
+        id="sortBy"
+        label="Sort By:"
+        [options]="sortOptions"
+        (selectionChange)="handleSortByChange($event)"
+      ></app-select>
+
+      <button class="sort-order-button" (click)="toggleSortOrder()">
+        <span *ngIf="sortOrder === 'asc'" class="arrow-up">&#9650;</span>
+        <span *ngIf="sortOrder === 'desc'" class="arrow-down">&#9660;</span>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading"><app-spinner></app-spinner> Loading Documents...</div>
+
+  <table
+    *ngIf="!isLoading && sortedDocumentList.length > 0"
+    class="documents-table"
+  >
+    <thead>
+      <tr>
+        <th>File Name</th>
+        <th>File Size</th>
+        <th>File Type</th>
+        <th>Upload Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let document of sortedDocumentList">
+        <td>{{ document.filename }}</td>
+        <td>
+          {{ document.size ? formatFileSize(document.size) : "N/A" }}
+        </td>
+        <td>{{ document.type.toUpperCase() }}</td>
+        <td>
+          {{ document.uploadDate ? formatDate(document.uploadDate) : "N/A" }}
+        </td>
+        <td>
+          <div class="actions-dropdown">
+            <button class="actions-button">Actions</button>
+            <div class="actions-dropdown-content">
+              <button class="view-button" (click)="viewDocument(document)">
+                View
+              </button>
+              <button
+                class="delete-button"
+                (click)="onDelete(document.filename, document.type)"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!isLoading && sortedDocumentList.length === 0">
+    No documents found.
+  </p>
 </div>
