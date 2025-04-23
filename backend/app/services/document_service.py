@@ -140,9 +140,12 @@ class DocumentService(DocumentServiceInterface):
             docs = [Document(page_content="Error loading document content.", metadata={"source": file_name})]
 
         # --- Integration with Uploadthing and MongoDB ---
-        uploadthing_url = None
+        uploadthing = None
         try:
-            uploadthing_url = self.uploadthing_service.upload(file, os.path.getsize(save_file))
+            uploadthing = self.uploadthing_service.upload(file, os.path.getsize(save_file))
+            key_value = uploadthing['key']
+            # print("uploadthing", uploadthing)
+            logging.info(type(key_value))
             # Save document details to MongoDB
             upload_date = datetime.now()
             self.document_detail_model.insert_document_detail(
@@ -150,9 +153,10 @@ class DocumentService(DocumentServiceInterface):
                 size=os.path.getsize(save_file),
                 upload_date=upload_date,
                 file_type=file_type,
-                url=uploadthing_url
+                url=uploadthing['url'],
+                key=uploadthing['key']
             )
-            logging.info(f"Document details saved to MongoDB for: {file_name} with URL: {uploadthing_url}")
+            logging.info(f"Document details saved to MongoDB for: {file_name} with URL: {uploadthing}")
 
         except Exception as e:
             logging.error(f"Error during Uploadthing upload or saving to MongoDB: {e}")

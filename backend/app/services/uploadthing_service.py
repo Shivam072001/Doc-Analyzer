@@ -124,7 +124,7 @@ class UploadthingService:
         if custom_id is None:
             custom_id = str(uuid.uuid4())
         
-        self.logger.info(f"Uploading file: {filename}, Size: {size}, Type: {content_type}")
+        # self.logger.info(f"Uploading file: {filename}, Size: {size}, Type: {content_type}")
         
         # Prepare headers and data for the initial request
         headers = {
@@ -200,7 +200,14 @@ class UploadthingService:
             upload_response.raise_for_status()
             
             self.logger.info(f"File '{filename}' uploaded successfully to Uploadthing. URL: {file_url}")
-            return file_url
+            uploadthing = {
+                "url": file_url,
+                "key": file_data['key'],
+                "fileName": file_data['fileName'],
+                "fileType": file_data['fileType']
+            }
+            print (uploadthing)
+            return uploadthing
             
         except requests.exceptions.RequestException as e:
             self.logger.error(f"Error communicating with Uploadthing: {str(e)}")

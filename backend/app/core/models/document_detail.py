@@ -12,9 +12,10 @@ class DocumentDetailModel:
         self.db = self.client[Config.MONGO_DB_NAME]
         self.document_details_collection = self.db['document_details']
 
-    def insert_document_detail(self, name: str, size: int, upload_date: datetime, file_type: str, url: str):
+    def insert_document_detail(self, name: str, size: int, upload_date: datetime, file_type: str, url: str, key: str):
         document_detail = {
             "name": name,
+            "key": key,
             "size": size,
             "upload_date": upload_date,
             "type": file_type,
