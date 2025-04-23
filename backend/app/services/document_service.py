@@ -171,11 +171,11 @@ class DocumentService(DocumentServiceInterface):
 
     def delete_document(self, file_id: str, file_name: str, file_type: str) -> None:
         directory = self.document_dirs.get(file_type)
+        self.document_detail_model.delete_document_detail_by_id(file_id)
         if directory:
             file_path = os.path.join(directory, file_name)
             if os.path.exists(file_path):
                 os.remove(file_path)
-                self.document_detail_model.delete_document_detail_by_id(file_id)
                 logging.info(f"Successfully deleted file: {file_path}")
             else:
                 logging.warning(f"File not found: {file_path}")
