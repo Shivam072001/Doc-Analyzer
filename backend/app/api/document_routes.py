@@ -73,6 +73,7 @@ def init_app(api_bp):
     @api_bp.route("/delete_document", methods=["POST"])
     def delete_single_document():
         json_content = request.json
+        file_id = json_content.get("file_id")
         file_name = json_content.get("file_name")
         file_type = json_content.get("file_type")
 
@@ -80,7 +81,7 @@ def init_app(api_bp):
             return jsonify({"error": "Both 'file_name' and 'file_type' are required in the JSON request"}), 400
 
         try:
-            document_service.delete_document(file_name, file_type)
+            document_service.delete_document(file_id, file_name, file_type)
             vector_store_service.delete_documents_by_source(file_name)
             return jsonify({"status": "success"})
         except FileNotFoundError:

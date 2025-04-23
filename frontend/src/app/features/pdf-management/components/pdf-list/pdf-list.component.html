@@ -63,7 +63,9 @@
               </button>
               <button
                 class="delete-button"
-                (click)="onDelete(document.filename, document.type)"
+                (click)="
+                  onDelete(document.fileId, document.filename, document.type)
+                "
               >
                 Delete
               </button>

@@ -137,3 +137,5 @@ PyJWT
 python-docx 
 openpyxl
 transformers
+docx2txt
+langchain_community

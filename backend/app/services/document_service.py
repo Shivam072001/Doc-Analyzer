@@ -1,22 +1,25 @@
 import os
-import shutil
-import hashlib
 from ..core.interfaces import DocumentServiceInterface
 from ..core.models.document import Document
 from ..utils.file_utils import file_exists, compute_file_hash, clear_directory
 from ..utils.text_processing import preprocess_text
+from ..core.dtos import DocumentDetail
 from langchain_community.document_loaders import PDFPlumberLoader, CSVLoader, Docx2txtLoader
 from openpyxl import load_workbook
 import logging
-from ..config.config import Config
-from datetime import datetime, timedelta
-import random
+from datetime import datetime
+from pymongo import MongoClient
+from ..config.config import Config  # Assuming you have a Config class
+from ..core.models.document_detail import DocumentDetailModel
+from ..services.uploadthing_service import UploadthingService
 
 class DocumentService(DocumentServiceInterface):
     def __init__(self, document_dirs):
         self.document_dirs = document_dirs
         for file_type, directory in self.document_dirs.items():
             os.makedirs(directory, exist_ok=True)
+        self.document_detail_model = DocumentDetailModel() # Instantiate the MongoDB model
+        self.uploadthing_service = UploadthingService() # Instantiate Uploadthing service
 
     def list_documents(self, file_type: str) -> list[str]:
         directory = self.document_dirs.get(file_type)
@@ -25,27 +28,29 @@ class DocumentService(DocumentServiceInterface):
         return []
 
     def list_document_details(self) -> list[dict]:
-        all_details = []
-        for file_type, directory in self.document_dirs.items():
-            extension = self._get_extension(file_type)
-            if directory:
-                for filename in os.listdir(directory):
-                    if filename.endswith(extension):
-                        file_path = os.path.join(directory, filename)
-                        try:
-                            size = os.path.getsize(file_path)
-                            # Simulate upload date (can be improved to fetch actual metadata if needed)
-                            mtime = os.path.getmtime(file_path)
-                            upload_date = datetime.fromtimestamp(mtime).isoformat()
-                            all_details.append({
-                                "filename": filename,
-                                "size": size,
-                                "type": file_type,
-                                "uploadDate": upload_date
-                            })
-                        except Exception as e:
-                            logging.error(f"Error getting details for {filename}: {e}")
-        return all_details
+        # all_details = []
+        # for file_type, directory in self.document_dirs.items():
+        #     extension = self._get_extension(file_type)
+        #     if directory:
+        #         for filename in os.listdir(directory):
+        #             if filename.endswith(extension):
+        #                 file_path = os.path.join(directory, filename)
+        #                 try:
+        #                     size = os.path.getsize(file_path)
+        #                     # Simulate upload date (can be improved to fetch actual metadata if needed)
+        #                     mtime = os.path.getmtime(file_path)
+        #                     upload_date = datetime.fromtimestamp(mtime).isoformat()
+        #                     detail = DocumentDetail(
+        #                         filename=filename,
+        #                         size=size,
+        #                         type=file_type,
+        #                         upload_date=upload_date
+        #                     )
+        #                     all_details.append(detail.__dict__)
+        #                 except Exception as e:
+        #                     logging.error(f"Error getting details for {filename}: {e}")
+        # return all_details
+        return self.document_detail_model.list_document_details()
 
     def _get_extension(self, file_type: str) -> str:
         if file_type == "pdf":
@@ -81,6 +86,7 @@ class DocumentService(DocumentServiceInterface):
         save_file = os.path.join(save_dir, file_name)
 
         if file_exists(save_file):
+            print ("File already exists.")
             raise ValueError("File already exists.")
 
         try:
@@ -133,6 +139,24 @@ class DocumentService(DocumentServiceInterface):
             is_structured = False
             docs = [Document(page_content="Error loading document content.", metadata={"source": file_name})]
 
+        # --- Integration with Uploadthing and MongoDB ---
+        uploadthing_url = None
+        try:
+            uploadthing_url = self.uploadthing_service.upload(file, os.path.getsize(save_file))
+            # Save document details to MongoDB
+            upload_date = datetime.now()
+            self.document_detail_model.insert_document_detail(
+                name=file_name,
+                size=os.path.getsize(save_file),
+                upload_date=upload_date,
+                file_type=file_type,
+                url=uploadthing_url
+            )
+            logging.info(f"Document details saved to MongoDB for: {file_name} with URL: {uploadthing_url}")
+
+        except Exception as e:
+            logging.error(f"Error during Uploadthing upload or saving to MongoDB: {e}")
+
         return {
             "filename": file_name,
             "doc_len": len(docs),
@@ -141,12 +165,13 @@ class DocumentService(DocumentServiceInterface):
             "file_type": file_type,
         }
 
-    def delete_document(self, file_name: str, file_type: str) -> None:
+    def delete_document(self, file_id: str, file_name: str, file_type: str) -> None:
         directory = self.document_dirs.get(file_type)
         if directory:
             file_path = os.path.join(directory, file_name)
             if os.path.exists(file_path):
                 os.remove(file_path)
+                self.document_detail_model.delete_document_detail_by_id(file_id)
                 logging.info(f"Successfully deleted file: {file_path}")
             else:
                 logging.warning(f"File not found: {file_path}")
@@ -159,6 +184,16 @@ class DocumentService(DocumentServiceInterface):
         directory = self.document_dirs.get(file_type)
         if directory:
             clear_directory(directory)
+            self.document_detail_model.clear_db()
         else:
             logging.warning(f"Invalid file type: {file_type}")
             raise ValueError(f"Invalid file type: {file_type}")
+
+    # --- Hypothetical function for Uploadthing integration ---
+    def upload_to_uploadthing(self, file):
+        """
+        This is a placeholder for your actual Uploadthing integration logic.
+        It should handle the upload and return the URL.
+        """
+        # Replace this with your actual implementation
+        return f"https://uploadthing.com/your-upload/{file.filename}"

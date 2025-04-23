@@ -25,10 +25,12 @@ export class PdfManagementPageComponent implements OnInit {
     doc_count: 0,
   };
   documentList: {
+    fileId: string;
     filename: string;
     type: string;
     size?: number;
     uploadDate?: string;
+    url?: string;
   }[] = [];
   isLoadingUpload: boolean = false;
   isLoadingList: boolean = false;
@@ -69,7 +71,6 @@ export class PdfManagementPageComponent implements OnInit {
 
     try {
       const result: any = await this.documentService.uploadFile(file);
-      console.log(result);
       if (result.status === 'success') {
         this.toastService.showToast(
           `Success: ${result.status}\nFilename: ${result.filename}\nType: ${result.file_type}\nLoaded ${result.doc_len} documents`,
@@ -109,7 +110,8 @@ export class PdfManagementPageComponent implements OnInit {
       this.processFiles(result.docx_files, 'docx');
       this.processFiles(result.csv_files, 'csv');
       this.processFiles(result.xlsx_files, 'xlsx');
-      this.processFiles(result.doc_files, 'doc'); // Assuming you have 'doc_files' as well
+      this.processFiles(result.doc_files, 'doc');
+      console.log('documents:', this.documentList);
 
       if (this.documentList.length === 0) {
         this.toastService.showToast('No documents found.', 'info');
@@ -124,11 +126,19 @@ export class PdfManagementPageComponent implements OnInit {
     }
   }
 
-  async deleteDocument(fileName: string, fileType: string): Promise<void> {
+  async deleteDocument(
+    file_id: string,
+    fileName: string,
+    fileType: string
+  ): Promise<void> {
     if (!confirm(`Are you sure you want to delete ${fileName}?`)) return;
 
     try {
-      const result: any = await this.documentService.deleteDocument(fileName, fileType);
+      const result: any = await this.documentService.deleteDocument(
+        file_id,
+        fileName,
+        fileType
+      );
       if (result.status === 'success') {
         this.toastService.showToast(
           'Document deleted successfully.',
@@ -179,10 +189,12 @@ export class PdfManagementPageComponent implements OnInit {
     if (files && files.length > 0) {
       this.documentList = this.documentList.concat(
         files.map((file: any) => ({
-          filename: file.filename,
+          fileId: file._id,
+          filename: file.name,
           type: type,
           size: file.size,
-          uploadDate: file.uploadDate,
+          uploadDate: file.upload_date,
+          url: file.url,
         }))
       );
     }

@@ -24,7 +24,12 @@ class Config:
     SEARCH_K = int(os.getenv('SEARCH_K', 20))
     
     MONGO_URI = os.getenv('MONGO_URI')
+    MONGO_DB_NAME = os.getenv('MONGO_DB_NAME', 'DocParser')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'your-secret-key') # Add a secret key
+
+    UPLOADTHING_TOKEN=os.getenv('UPLOADTHING_TOKEN')
+    UPLOADTHING_URL=os.getenv('UPLOADTHING_URL', 'https://uploadthing.com/api/v6/uploadFiles')
+    UPLOADTHING_MULTIPART_URL=os.getenv('UPLOADTHING_MULTIPART_URL', 'https://uploadthing.com/api/v6/completeMultipart')
 
     @staticmethod
     def get_config(environment):

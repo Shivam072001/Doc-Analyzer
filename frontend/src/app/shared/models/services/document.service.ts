@@ -40,9 +40,10 @@ export class DocumentService {
     }
   }
 
-  async deleteDocument<T>(fileName: string, fileType: string): Promise<T> {
+  async deleteDocument<T>(fileId: string, fileName: string, fileType: string): Promise<T> {
     try {
       return await this.apiService.post<T>('/delete_document', {
+        file_id: fileId,
         file_name: fileName,
         file_type: fileType,
       });

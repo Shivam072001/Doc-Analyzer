@@ -9,10 +9,12 @@ import {
 } from '@angular/core';
 
 interface DocumentItem {
+  fileId: string;
   filename: string;
   type: string;
   size?: number; // Optional file size in bytes
   uploadDate?: string; // Optional upload date string (e.g., ISO 8601)
+  url?: string;
 }
 
 interface SortOption {
@@ -29,7 +31,11 @@ interface SortOption {
 export class PdfListComponent implements OnInit, OnChanges {
   @Input() documentList: DocumentItem[] = [];
   @Input() isLoading: boolean = false;
-  @Output() delete = new EventEmitter<{ filename: string; type: string }>();
+  @Output() delete = new EventEmitter<{
+    fileId: string;
+    filename: string;
+    type: string;
+  }>();
 
   availableFileTypes: string[] = [];
   selectedFileTypes: string[] = [];
@@ -138,12 +144,12 @@ export class PdfListComponent implements OnInit, OnChanges {
     });
   }
 
-  onDelete(fileName: string, type: string): void {
-    this.delete.emit({ filename: fileName, type: type });
+  onDelete(fileId: string, fileName: string, type: string): void {
+    this.delete.emit({ fileId: fileId, filename: fileName, type: type });
   }
 
   viewDocument(document: DocumentItem): void {
-    window.open(`/documents/${document.type}/${document.filename}`, '_blank');
+    window.open(`${document.url}`, '_blank');
   }
 
   formatFileSize(bytes: number): string {

@@ -7,7 +7,7 @@ class DocumentServiceInterface(ABC):
         """Lists documents of a specific type."""
         pass
     
-    def list_document_details(self, file_type: str) -> list[dict]:
+    def list_document_details(self) -> list[dict]:
         """
         Lists details of all documents of a specific type.
 

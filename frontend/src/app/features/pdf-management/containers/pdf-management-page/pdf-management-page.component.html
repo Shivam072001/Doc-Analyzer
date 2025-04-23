@@ -11,7 +11,7 @@
   <div class="card section">
     <app-document-list
       [documentList]="documentList"
-      (delete)="deleteDocument($event.filename, $event.type)"
+      (delete)="deleteDocument($event.fileId, $event.filename, $event.type)"
       [isLoading]="isLoadingList"
     ></app-document-list>
   </div>

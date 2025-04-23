@@ -41,6 +41,7 @@ def init_app(api_bp): # Update parameter name to avoid shadowing
         json_content = request.json
         query = json_content.get("query")
         prompt_type = json_content.get("promptType")
+        selected_files = json_content.get('selected_files')  # This will be a list of filenames from the UI
 
         if not query:
             return jsonify({"error": "No 'query' found in JSON request"}), 400
@@ -50,7 +51,7 @@ def init_app(api_bp): # Update parameter name to avoid shadowing
             return jsonify({"error": "Unknown prompt type"}), 400
 
         try:
-            retrieval_result = vector_store_service.query_vector_store(query, prompt)
+            retrieval_result = vector_store_service.query_vector_store(query, prompt, selected_files)
             answer = retrieval_result['answer']
             sources = stats_service.create_context_with_metadata(retrieval_result.get("context", []))
 
@@ -70,6 +71,17 @@ def init_app(api_bp): # Update parameter name to avoid shadowing
         except Exception as e:
             logging.error(f"Error in /ask_document: {e}")
             return jsonify({"error": str(e)}), 500
+    
+    @api_bp.route('/suggest_questions', methods=['POST'])
+    def suggest_questions():
+        json_content = request.get_json()
+        prompt_type = json_content.get('prompt_type')
+        selected_files = json_content.get('selected_files') # Get the list of selected files
+        if not prompt_type:
+            return jsonify({"error": "prompt_type is required"}), 400
+
+        suggestive_questions = vector_store_service.generate_suggestive_questions(prompt_type, selected_files=selected_files)
+        return jsonify({"suggestive_questions": suggestive_questions})
 
     @api_bp.route("/clear_chat_history", methods=["POST"])
     def clear_chat_history():
@@ -80,14 +92,11 @@ def init_app(api_bp): # Update parameter name to avoid shadowing
     def clear_db():
         try:
             vector_store_service.clear_vector_store()
-            # Assuming document_service.clear_file_directory now takes user_id
-            # We need to know the current user to clear their files.
-            # Consider if this route should be protected and how to handle clearing all users' data.
-            # For now, I'll keep it as clearing all directories.
-            document_service.clear_file_directory("pdf")
-            document_service.clear_file_directory("docx")
-            document_service.clear_file_directory("csv")
-            document_service.clear_file_directory("xlsx")
+            
+            document_service.clear_document_directory("pdf")
+            document_service.clear_document_directory("docx")
+            document_service.clear_document_directory("csv")
+            document_service.clear_document_directory("xlsx")
             return jsonify({"status": "Database and files cleared successfully"})
         except Exception as e:
             logging.error(f"Error clearing database: {e}")
